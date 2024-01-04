@@ -1,5 +1,8 @@
 import 'package:deutsch_example/service/ForecastService.dart';
+import 'package:deutsch_example/ui/WeatherCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'model/Forecast.dart';
 
@@ -14,20 +17,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Wetter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -35,12 +35,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final ForecastService forecastService = ForecastService();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+  late Forecast forecast = Forecast.empty();
 
-  late Forecast forecast;
+  bool _loading = false;
 
   @override
   void initState() {
-    getForecast();
+    _loadForecast();
   }
 
   @override
@@ -48,29 +51,45 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Wetter-Demo"),
       ),
       body: RefreshIndicator(
-          child: Center(
+        key: _refreshIndicatorKey,
+        onRefresh: () async => await _getForecast(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Skeletonizer(
+            enabled: _loading || forecast.name == "",
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Title(
-                    color: Colors.black,
-                    child: const Text("Das aktuelle Wetter")),
-                Icon(forecast.icon),
-                Text(forecast.name),
-                Text("Temperatur: ${forecast.temp} °C")
+                WeatherCard(text: forecast.name, icon: forecast.icon),
+                WeatherCard(
+                    text: "Temperatur: ${forecast.temp} °C",
+                    icon: Icons.thermostat),
+                WeatherCard(
+                    text: forecast.forecastText, icon: Icons.short_text),
               ],
             ),
           ),
-          onRefresh: () async => getForecast()),
+        ),
+      ),
     );
   }
 
-  void getForecast() {
+  void _loadForecast() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _refreshIndicatorKey.currentState?.show();
+    });
+  }
+
+  Future<void> _getForecast() async {
+    setState(() {
+      _loading = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       forecast = forecastService.getForecast();
+      _loading = false;
     });
   }
 }
