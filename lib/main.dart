@@ -1,3 +1,5 @@
+import 'package:deutsch_example/responsive/LayoutUtils.dart';
+import 'package:deutsch_example/responsive/ResponsiveWrapper.dart';
 import 'package:deutsch_example/service/ForecastService.dart';
 import 'package:deutsch_example/ui/WeatherCard.dart';
 import 'package:flutter/material.dart';
@@ -52,28 +54,73 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Wetter-Demo"),
+        actions: buildActionButtons(),
       ),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: () async => await _getForecast(),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Skeletonizer(
-            enabled: _loading || forecast.name == "",
-            child: Column(
-              children: <Widget>[
-                WeatherCard(text: forecast.name, icon: forecast.icon),
-                WeatherCard(
-                    text: "Temperatur: ${forecast.temp} °C",
-                    icon: Icons.thermostat),
-                WeatherCard(
-                    text: forecast.forecastText, icon: Icons.short_text),
-              ],
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Skeletonizer(
+              enabled: _loading || forecast.name == "",
+              child: ResponsiveWrapper(
+                mobile: Column(
+                  children: <Widget>[
+                    buildForecastName(),
+                    buildForecastTemp(),
+                    buildForecastText(),
+                  ],
+                ),
+                tablet: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: buildForecastName()),
+                        Expanded(child: buildForecastTemp()),
+                      ],
+                    ),
+                    buildForecastText(),
+                  ],
+                ),
+                desktop: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: buildForecastName()),
+                        Expanded(child: buildForecastTemp()),
+                        Expanded(child: buildForecastText()),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget buildForecastName() {
+    return WeatherCard(text: forecast.name, icon: forecast.icon);
+  }
+
+  Widget buildForecastTemp() {
+    return WeatherCard(
+        text: "Temperatur: ${forecast.temp} °C", icon: Icons.thermostat);
+  }
+
+  Widget buildForecastText() {
+    return WeatherCard(text: forecast.forecastText, icon: Icons.short_text);
+  }
+
+  List<Widget>? buildActionButtons() {
+    if(LayoutUtils.isDesktop(MediaQuery.of(context).size.width)) {
+      return [IconButton(icon: const Icon(Icons.refresh), onPressed: () => _loadForecast())];
+    }
+    return [];
   }
 
   void _loadForecast() {

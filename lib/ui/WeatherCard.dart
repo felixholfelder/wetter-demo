@@ -29,7 +29,7 @@ class _WeatherCardState extends State<WeatherCard> {
                       Expanded(child: Text(widget.text)),
                     ],
                   )
-                : Text(widget.text),
+                : Expanded(child: Text(widget.text)),
           ],
         ),
       ),
