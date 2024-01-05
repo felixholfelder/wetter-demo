@@ -1,4 +1,4 @@
-# deutsch_example
+# Wetter-Demo
 
 A new Flutter project
 
