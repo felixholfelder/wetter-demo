@@ -14,6 +14,7 @@ on:
 
 env:
   IMAGE_NAME: felixholfelder/wetter-demo
+  VERSION: 0.0.${{ github.run_id }}
 
 jobs:
   versioning:
@@ -21,13 +22,10 @@ jobs:
     steps:
       - name: Set version
         run: |
-          if [[ github.ref_type != 'tag' ]]; then
-              echo "VERSION=0.0.${{ github.run_id }}" >> $GITHUB_ENV
-          else
+          if [[ github.ref_type = 'tag' ]]; then
               echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
           echo Version: ${{ env.VERSION }}
-          echo Version: ${{ VERSION }}
 
   dockerize:
     runs-on: ubuntu-latest
