@@ -23,7 +23,7 @@ jobs:
       - name: Set version
         run: |
           if [[ github.ref_type != 'tag' ]]; then
-              export VERSION=0.0.${{ github.run_number }}
+              export VERSION=0.0.${{ github.run_id }}
           fi
 
   qualitygate:
