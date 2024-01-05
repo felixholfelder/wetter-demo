@@ -23,7 +23,7 @@ jobs:
       - name: Set version
         run: |
           if [[ github.ref_type != 'tag' ]]; then
-              echo "VERSION=${{ GITHUB_RUN_NUMBER }}" >> "0.0.$GITHUB_RUN_NUMBER"
+              echo "VERSION=${{ github.run_number }}" >> "0.0.$GITHUB_RUN_NUMBER"
           fi
 
   qualitygate:
