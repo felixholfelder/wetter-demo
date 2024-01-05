@@ -23,8 +23,9 @@ jobs:
       - name: Set version
         run: |
           if [[ github.ref_type != 'tag' ]]; then
-              export VERSION=0.0.${{ github.run_id }}
+              echo "VERSION=0.0.${{ github.run_id }}" >> $GITHUB_ENV
           fi
+          echo Version: ${{ env.VERSION }}
 
   qualitygate:
     runs-on: ubuntu-latest
