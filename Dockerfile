@@ -44,4 +44,5 @@ COPY --from=build-env /app/build/web /usr/share/nginx/html
 
 # Expose and run nginx
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+# CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
