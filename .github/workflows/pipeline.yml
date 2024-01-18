@@ -57,22 +57,12 @@ jobs:
           flutter --version
           flutter build apk --release
 
-      - name: Build Windows-EXE
-        run: |
-          flutter --version
-          flutter build windows --release
-
       - name: Save Android-build
         uses: actions/upload-artifact@v3
         with:
           name: android-apk
           path: output/app/outputs/apk/release/app-release.apk
 
-      - name: Save Windows-build
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-apk
-          path: output/app/outputs/apk/release/app-release.apk
 #
 #  clean-up:
 #    runs-on: ubuntu-latest
