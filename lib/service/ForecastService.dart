@@ -25,8 +25,8 @@ class ForecastService {
   Forecast getForecast() {
     Weather randomWeather = weathers[random.nextInt(weathers.length)];
     String forecastText = forecastTexts[random.nextInt(forecastTexts.length)];
-    int randomTemp = randomWeather.minTemp +
-        random.nextInt(randomWeather.maxTemp - randomWeather.minTemp);
+    int randomTemp = randomWeather.minTemp + random.nextInt(randomWeather.maxTemp - randomWeather.minTemp);
+
     return Forecast(
         name: randomWeather.name,
         temp: randomTemp,
