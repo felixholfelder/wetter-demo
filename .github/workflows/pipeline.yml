@@ -49,14 +49,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Android-APK
+      - name: Use flutter-sdk
         uses: subosito/flutter-action@v2
+
+      - name: Build Android-APK
         run: |
           flutter --version
           flutter build apk --release
 
       - name: Build Windows-EXE
-        uses: subosito/flutter-action@v2
         run: |
           flutter --version
           flutter build windows --release
