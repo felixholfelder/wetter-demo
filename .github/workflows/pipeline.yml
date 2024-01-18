@@ -73,13 +73,13 @@ jobs:
         with:
           name: windows-apk
           path: output/app/outputs/apk/release/app-release.apk
-
-  clean-up:
-    runs-on: ubuntu-latest
-    if: always()
-    needs: deploy
-    steps:
-      - name: Delete artifacts
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: refuel-service-artifact
+#
+#  clean-up:
+#    runs-on: ubuntu-latest
+#    if: always()
+#    needs: deploy
+#    steps:
+#      - name: Delete artifacts
+#        uses: geekyeggo/delete-artifact@v2
+#        with:
+#          name: refuel-service-artifact
